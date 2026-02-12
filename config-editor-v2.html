@@ -1005,7 +1005,7 @@
                 if (id !== currentEditingScene) {
                     const option = document.createElement('option');
                     option.value = id;
-                    option.textContent = scene.title;
+                    option.textContent = id + ' - ' + scene.title;
                     sceneSelect.appendChild(option);
                 }
             }

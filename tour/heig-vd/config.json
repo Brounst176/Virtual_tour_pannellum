@@ -29,7 +29,7 @@
   ],
   "scenes": {
     "1": {
-      "title": "Image 1",
+      "title": "D61",
       "floor": "D61",
       "hfov": 110,
       "pitch": -10,
@@ -68,7 +68,7 @@
       }
     },
     "2": {
-      "title": "Image 2",
+      "title": "D61",
       "floor": "D61",
       "hfov": 110,
       "pitch": 0,
@@ -107,7 +107,7 @@
       }
     },
     "3": {
-      "title": "Image 3",
+      "title": "D61",
       "floor": "D61",
       "hfov": 110,
       "pitch": 0,
@@ -140,7 +140,7 @@
       }
     },
     "4": {
-      "title": "Image 4",
+      "title": "D61",
       "floor": "D61",
       "hfov": 110,
       "pitch": 0,
