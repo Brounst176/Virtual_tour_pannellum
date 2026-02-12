@@ -1,0 +1,167 @@
+{
+  "author": "HEIG-VD",
+  "firstScene": "1",
+  "sceneFadeDuration": 500,
+  "floors": [
+    {
+      "id": "ground",
+      "name": "D61",
+      "plan": "plans/d61.svg",
+      "scenes": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    }
+  ],
+  "scenes": {
+    "1": {
+      "title": "D61",
+      "floor": "ground",
+      "hfov": 110,
+      "pitch": -10,
+      "yaw": 5,
+      "type": "equirectangular",
+      "panorama": "/tour/d61/1.jpg",
+      "mapPosition": {
+        "x": 64,
+        "y": 32
+      },
+      "hotSpots": [
+        {
+          "pitch": -2.1,
+          "yaw": 0,
+          "type": "scene",
+          "sceneId": "2"
+        },
+        {
+          "pitch": -3.8,
+          "yaw": 93,
+          "type": "scene",
+          "sceneId": "3"
+        },
+        {
+          "pitch": 0.4,
+          "yaw": 51.7,
+          "type": "scene",
+          "sceneId": "4"
+        },
+        {
+          "pitch": -31.5,
+          "yaw": 31.3,
+          "type": "info",
+          "text": "Carte de la suisse"
+        }
+      ]
+    },
+    "2": {
+      "title": "D61",
+      "floor": "ground",
+      "hfov": 110,
+      "yaw": 260,
+      "type": "equirectangular",
+      "panorama": "/tour/d61/2.jpg",
+      "mapPosition": {
+        "x": 64,
+        "y": 55
+      },
+      "hotSpots": [
+        {
+          "pitch": -2.5,
+          "yaw": -83.4,
+          "type": "scene",
+          "sceneId": "1"
+        },
+        {
+          "pitch": -1.5,
+          "yaw": -131.1,
+          "type": "scene",
+          "sceneId": "3"
+        },
+        {
+          "pitch": -3.4,
+          "yaw": 170.1,
+          "type": "scene",
+          "sceneId": "4"
+        },
+        {
+          "pitch": 6.6,
+          "yaw": -178.4,
+          "type": "info",
+          "text": "Station totale"
+        }
+      ]
+    },
+    "3": {
+      "title": "D61",
+      "floor": "ground",
+      "hfov": 110,
+      "yaw": 5,
+      "type": "equirectangular",
+      "panorama": "/tour/d61/3.jpg",
+      "mapPosition": {
+        "x": 32,
+        "y": 32
+      },
+      "hotSpots": [
+        {
+          "pitch": -0.4,
+          "yaw": -77.4,
+          "type": "scene",
+          "sceneId": "1"
+        },
+        {
+          "pitch": -0.5,
+          "yaw": -40.6,
+          "type": "scene",
+          "sceneId": "2"
+        },
+        {
+          "pitch": 1.0,
+          "yaw": 32.4,
+          "type": "scene",
+          "sceneId": "4"
+        }
+      ]
+    },
+    "4": {
+      "title": "D61",
+      "floor": "ground",
+      "hfov": 110,
+      "yaw": 5,
+      "type": "equirectangular",
+      "panorama": "/tour/d61/4.jpg",
+      "mapPosition": {
+        "x": 17.32,
+        "y": 84.85
+      },
+      "hotSpots": [
+        {
+          "pitch": 1.4,
+          "yaw": 0.3,
+          "type": "scene",
+          "sceneId": "1"
+        },
+        {
+          "pitch": 1.5,
+          "yaw": 22.2,
+          "type": "scene",
+          "sceneId": "2"
+        },
+        {
+          "pitch": 0.2,
+          "yaw": -33.0,
+          "type": "scene",
+          "sceneId": "3"
+        },
+        {
+          "pitch": -4.6,
+          "yaw": -111.6,
+          "type": "info",
+          "text": "Sortie"
+        }
+      ]
+    }
+  }
+}

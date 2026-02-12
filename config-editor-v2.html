@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur de Visite Virtuelle - v2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: none;
+            background: none;
+            font-size: 16px;
+        }
+
+        .tab:hover {
+            background: #e8e8e8;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .scene-list,
+        .floor-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .scene-card,
+        .floor-card {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .scene-card:hover,
+        .floor-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .scene-card h3,
+        .floor-card h3 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .scene-card p,
+        .floor-card p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .scene-card .actions,
+        .floor-card .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .plan-editor {
+            margin-top: 20px;
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .plan-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 20px;
+            max-width: 100%;
+        }
+
+        .plan-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .plan-point {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .plan-point:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            z-index: 10;
+        }
+
+        .code-preview {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .hotspot-list {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .hotspot-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .hotspot-item.scene-type {
+            border-left: 4px solid #667eea;
+        }
+
+        .hotspot-item.info-type {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .hotspot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .hotspot-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .hotspot-badge.scene {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .hotspot-badge.info {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .file-upload {
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .instructions {
+            background: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h4 {
+            color: #0284c7;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+            color: #374151;
+        }
+
+        /* Éditeur visuel de hotspots */
+        .panorama-editor {
+            margin-top: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .panorama-container {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .panorama-container img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .hotspot-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 3px solid white;
+        }
+
+        .hotspot-marker.scene-marker {
+            background: #667eea;
+        }
+
+        .hotspot-marker.info-marker {
+            background: #f59e0b;
+        }
+
+        .hotspot-marker:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            z-index: 10;
+        }
+
+        .hotspot-marker.selected {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
+        }
+
+        .panorama-controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .panorama-controls h4 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .coord-display {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Éditeur de Visite Virtuelle v2</h1>
+            <p>Créez et modifiez votre configuration facilement - Avec placement visuel des hotspots !</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab(0)">📁 Charger Config</button>
+            <button class="tab" onclick="switchTab(1)">🏢 Étages</button>
+            <button class="tab" onclick="switchTab(2)">📸 Scènes</button>
+            <button class="tab" onclick="switchTab(3)">📍 Positions Plan</button>
+            <button class="tab" onclick="switchTab(4)">💾 Exporter</button>
+        </div>
+
+        <div class="content">
+            <!-- TAB 0: Charger Config -->
+            <div class="tab-content active">
+                <div class="instructions">
+                    <h4>📖 Bienvenue dans l'éditeur v2</h4>
+                    <ul>
+                        <li>✨ Nouveau : Placement visuel des hotspots sur l'image panorama</li>
+                        <li>✨ Nouveau : Type de hotspot (scène ou info)</li>
+                        <li>Chargez un fichier config.json existant ou créez-en un nouveau</li>
+                        <li>Exportez votre configuration mise à jour</li>
+                    </ul>
+                </div>
+
+                <div class="file-upload" onclick="document.getElementById('configUpload').click()">
+                    <input type="file" id="configUpload" accept=".json" onchange="loadConfig(event)">
+                    <h3>📂 Charger un fichier config.json</h3>
+                    <p>Cliquez ici ou glissez-déposez un fichier</p>
+                </div>
+
+                <div style="text-align: center; margin: 30px 0;">
+                    <p style="color: #999;">— ou —</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="createNewConfig()" style="width: 100%;">
+                    ✨ Créer une nouvelle configuration
+                </button>
+
+                <div id="loadedInfo" style="display: none; margin-top: 30px;">
+                    <div class="alert alert-success">
+                        <strong>✅ Configuration chargée !</strong><br>
+                        <span id="configInfo"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 1: Étages -->
+            <div class="tab-content">
+                <div class="alert alert-info">
+                    <strong>💡 Astuce :</strong> Ajoutez vos différents étages avec leurs plans d'architecte
+                </div>
+
+                <button class="btn btn-primary" onclick="showAddFloorModal()">+ Ajouter un étage</button>
+                
+                <div class="floor-list" id="floorList"></div>
+
+                <!-- Modal Étage -->
+                <div id="floorModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 20px; overflow-y: auto;">
+                    <div style="max-width: 600px; margin: 50px auto; background: white; border-radius: 12px; padding: 30px;">
+                        <h2 id="floorModalTitle">Ajouter un étage</h2>
+                        <form id="floorForm" onsubmit="saveFloor(event)">
+                            <div class="form-group">
+                                <label>ID de l'étage *</label>
+                                <input type="text" id="floorId" required placeholder="ex: ground, first, second">
+                            </div>
+                            <div class="form-group">
+                                <label>Nom de l'étage *</label>
+                                <input type="text" id="floorName" required placeholder="ex: Rez-de-chaussée">
+                            </div>
+                            <div class="form-group">
+                                <label>Chemin du plan (image ou SVG) *</label>
+                                <input type="text" id="floorPlan" required placeholder="ex: /images/plan-rdc.jpg">
+                                <small style="color: #666;">Formats acceptés: .jpg, .png, .svg ou data:image/svg+xml</small>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+                                <button type="button" class="btn btn-secondary" onclick="closeFloorModal()">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Scènes -->
+            <div class="tab-content">
+                <div class="alert alert-info">
+                    <strong>💡 Astuce :</strong> Une scène = un panorama 360°. Cliquez sur "Modifier" pour placer les hotspots visuellement !
+                </div>
+
+                <button class="btn btn-primary" onclick="showAddSceneModal()">+ Ajouter une scène</button>
+                
+                <div class="scene-list" id="sceneList"></div>
+
+                <!-- Modal Scène -->
+                <div id="sceneModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 20px; overflow-y: auto;">
+                    <div style="max-width: 1200px; margin: 50px auto; background: white; border-radius: 12px; padding: 30px;">
+                        <h2 id="sceneModalTitle">Ajouter une scène</h2>
+                        <form id="sceneForm" onsubmit="saveScene(event)">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>ID de la scène *</label>
+                                    <input type="text" id="sceneId" required placeholder="ex: entrance">
+                                </div>
+                                <div class="form-group">
+                                    <label>Titre *</label>
+                                    <input type="text" id="sceneTitle" required placeholder="ex: Entrée principale">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Étage *</label>
+                                <select id="sceneFloor" required>
+                                    <option value="">-- Sélectionner --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Chemin du panorama 360° *</label>
+                                <input type="text" id="scenePanorama" required placeholder="ex: /images/entrance.jpg">
+                                <button type="button" class="btn btn-secondary" onclick="loadPanoramaPreview()" style="margin-top: 10px;">
+                                    🖼️ Charger l'aperçu
+                                </button>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>HFOV (champ de vision)</label>
+                                    <input type="number" id="sceneHfov" value="110" min="50" max="120">
+                                </div>
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <select id="sceneType">
+                                        <option value="equirectangular">Equirectangular</option>
+                                        <option value="cubemap">Cubemap</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>Pitch (inclinaison)</label>
+                                    <input type="number" id="scenePitch" value="0" min="-90" max="90">
+                                </div>
+                                <div class="form-group">
+                                    <label>Yaw (rotation)</label>
+                                    <input type="number" id="sceneYaw" value="0" min="-180" max="180">
+                                </div>
+                            </div>
+
+                            <h3 style="margin-top: 30px;">🎯 Hotspots - Placement visuel</h3>
+                            
+                            <div class="panorama-editor" id="panoramaEditor" style="display: none;">
+                                <div class="panorama-controls">
+                                    <h4>🖱️ Cliquez sur l'image pour placer un hotspot</h4>
+                                    <div class="grid-2">
+                                        <div class="form-group">
+                                            <label>Type de hotspot</label>
+                                            <select id="newHotspotType">
+                                                <option value="scene">🔵 Scène (navigation)</option>
+                                                <option value="info">🟡 Info (texte)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Texte *</label>
+                                            <input type="text" id="newHotspotText" placeholder="Texte du hotspot">
+                                        </div>
+                                    </div>
+                                    <div id="sceneSelectGroup" class="form-group">
+                                        <label>Scène de destination *</label>
+                                        <select id="newHotspotScene">
+                                            <option value="">-- Sélectionner --</option>
+                                        </select>
+                                    </div>
+                                    <div class="coord-display" id="coordDisplay">
+                                        Cliquez sur l'image pour placer un hotspot
+                                    </div>
+                                </div>
+                                
+                                <div class="panorama-container" id="panoramaContainer"></div>
+                            </div>
+
+                            <h4 style="margin-top: 20px;">Liste des hotspots</h4>
+                            <div id="hotspotList" class="hotspot-list"></div>
+
+                            <div style="margin-top: 20px;">
+                                <button type="submit" class="btn btn-success">💾 Enregistrer la scène</button>
+                                <button type="button" class="btn btn-secondary" onclick="closeSceneModal()">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Positions Plan -->
+            <div class="tab-content">
+                <div class="instructions">
+                    <h4>📍 Comment positionner les scènes sur le plan</h4>
+                    <ul>
+                        <li>Sélectionnez un étage</li>
+                        <li>Cliquez sur le plan pour placer/déplacer les scènes</li>
+                        <li>Les positions sont sauvegardées automatiquement</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label>Sélectionner un étage</label>
+                    <select id="planFloorSelect" onchange="loadPlan()">
+                        <option value="">-- Sélectionner un étage --</option>
+                    </select>
+                </div>
+
+                <div class="plan-editor" id="planEditor" style="display: none;">
+                    <h3 id="planTitle"></h3>
+                    <p style="color: #666; margin-bottom: 10px;">Cliquez sur le plan pour positionner une scène</p>
+                    
+                    <div class="form-group">
+                        <label>Scène à positionner</label>
+                        <select id="sceneToPosition">
+                            <option value="">-- Sélectionner une scène --</option>
+                        </select>
+                    </div>
+
+                    <div class="plan-container" id="planContainer"></div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Exporter -->
+            <div class="tab-content">
+                <div class="alert alert-success">
+                    <strong>✅ Prêt à exporter !</strong> Votre configuration sera téléchargée au format JSON.
+                </div>
+
+                <button class="btn btn-success" onclick="downloadConfig()" style="width: 100%; padding: 20px; font-size: 18px;">
+                    📥 Télécharger config.json
+                </button>
+
+                <h3 style="margin-top: 30px;">📋 Aperçu de la configuration</h3>
+                <div class="code-preview" id="configPreview"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let config = {
+            author: "Visite Virtuelle",
+            sceneFadeDuration: 1000,
+            floors: [],
+            scenes: {}
+        };
+
+        let currentEditingFloor = null;
+        let currentEditingScene = null;
+        let hotspots = [];
+        let selectedHotspotIndex = null;
+
+        // ========== GESTION DES TABS ==========
+        function switchTab(index) {
+            document.querySelectorAll('.tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.tab-content').forEach((content, i) => {
+                content.classList.toggle('active', i === index);
+            });
+
+            if (index === 1) renderFloors();
+            if (index === 2) renderScenes();
+            if (index === 3) updatePlanFloorSelect();
+            if (index === 4) updateConfigPreview();
+        }
+
+        // ========== CHARGEMENT CONFIG ==========
+        function loadConfig(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    config = JSON.parse(e.target.result);
+                    document.getElementById('loadedInfo').style.display = 'block';
+                    document.getElementById('configInfo').textContent = 
+                        `${Object.keys(config.scenes).length} scène(s), ${config.floors.length} étage(s)`;
+                    
+                    renderFloors();
+                    renderScenes();
+                    alert('✅ Configuration chargée avec succès !');
+                } catch (error) {
+                    alert('❌ Erreur de lecture du fichier JSON: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function createNewConfig() {
+            config = {
+                author: "Visite Virtuelle",
+                sceneFadeDuration: 1000,
+                floors: [],
+                scenes: {}
+            };
+            document.getElementById('loadedInfo').style.display = 'block';
+            document.getElementById('configInfo').textContent = 'Nouvelle configuration créée';
+            alert('✅ Nouvelle configuration créée !');
+        }
+
+        // ========== GESTION DES ÉTAGES ==========
+        function renderFloors() {
+            const list = document.getElementById('floorList');
+            list.innerHTML = '';
+
+            config.floors.forEach((floor, index) => {
+                const card = document.createElement('div');
+                card.className = 'floor-card';
+                card.innerHTML = `
+                    <h3>${floor.name}</h3>
+                    <p><strong>ID:</strong> ${floor.id}</p>
+                    <p><strong>Scènes:</strong> ${floor.scenes.length}</p>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="editFloor(${index})">✏️ Modifier</button>
+                        <button class="btn btn-danger" onclick="deleteFloor(${index})">🗑️ Supprimer</button>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function showAddFloorModal() {
+            currentEditingFloor = null;
+            document.getElementById('floorModalTitle').textContent = 'Ajouter un étage';
+            document.getElementById('floorForm').reset();
+            document.getElementById('floorModal').style.display = 'block';
+        }
+
+        function editFloor(index) {
+            currentEditingFloor = index;
+            const floor = config.floors[index];
+            document.getElementById('floorModalTitle').textContent = 'Modifier l\'étage';
+            document.getElementById('floorId').value = floor.id;
+            document.getElementById('floorName').value = floor.name;
+            document.getElementById('floorPlan').value = floor.plan;
+            document.getElementById('floorModal').style.display = 'block';
+        }
+
+        function saveFloor(event) {
+            event.preventDefault();
+            
+            const floorData = {
+                id: document.getElementById('floorId').value,
+                name: document.getElementById('floorName').value,
+                plan: document.getElementById('floorPlan').value,
+                scenes: currentEditingFloor !== null ? config.floors[currentEditingFloor].scenes : []
+            };
+
+            if (currentEditingFloor !== null) {
+                config.floors[currentEditingFloor] = floorData;
+            } else {
+                config.floors.push(floorData);
+            }
+
+            closeFloorModal();
+            renderFloors();
+            alert('✅ Étage enregistré !');
+        }
+
+        function deleteFloor(index) {
+            if (confirm('Voulez-vous vraiment supprimer cet étage ?')) {
+                config.floors.splice(index, 1);
+                renderFloors();
+            }
+        }
+
+        function closeFloorModal() {
+            document.getElementById('floorModal').style.display = 'none';
+        }
+
+        // ========== GESTION DES SCÈNES ==========
+        function renderScenes() {
+            const list = document.getElementById('sceneList');
+            list.innerHTML = '';
+
+            for (const [id, scene] of Object.entries(config.scenes)) {
+                const card = document.createElement('div');
+                card.className = 'scene-card';
+                card.innerHTML = `
+                    <h3>${scene.title}</h3>
+                    <p><strong>ID:</strong> ${id}</p>
+                    <p><strong>Étage:</strong> ${scene.floor}</p>
+                    <p><strong>Hotspots:</strong> ${scene.hotSpots ? scene.hotSpots.length : 0}</p>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="editScene('${id}')">✏️ Modifier</button>
+                        <button class="btn btn-danger" onclick="deleteScene('${id}')">🗑️ Supprimer</button>
+                    </div>
+                `;
+                list.appendChild(card);
+            }
+        }
+
+        function showAddSceneModal() {
+            currentEditingScene = null;
+            hotspots = [];
+            document.getElementById('sceneModalTitle').textContent = 'Ajouter une scène';
+            document.getElementById('sceneForm').reset();
+            document.getElementById('panoramaEditor').style.display = 'none';
+            updateSceneFloorSelect();
+            updateHotspotList();
+            document.getElementById('sceneModal').style.display = 'block';
+        }
+
+        function editScene(sceneId) {
+            currentEditingScene = sceneId;
+            const scene = config.scenes[sceneId];
+            console.log(scene)
+            
+            
+            hotspots = scene.hotSpots || [];
+            updateSceneFloorSelect();
+            updateHotspotList();
+            document.getElementById('sceneModal').style.display = 'block';
+
+            document.getElementById('sceneModalTitle').textContent = 'Modifier la scène';
+            document.getElementById('sceneId').value = sceneId;
+            document.getElementById('sceneTitle').value = scene.title;
+            document.getElementById('sceneFloor').value = scene.floor;
+            document.getElementById('scenePanorama').value = scene.panorama;
+            document.getElementById('sceneHfov').value = scene.hfov || 110;
+            document.getElementById('sceneType').value = scene.type || 'equirectangular';
+            document.getElementById('scenePitch').value = scene.pitch || 0;
+            document.getElementById('sceneYaw').value = scene.yaw || 0;
+            
+            // Charger automatiquement le panorama si possible
+            if (scene.panorama) {
+                setTimeout(() => loadPanoramaPreview(), 100);
+            }
+        }
+
+        function saveScene(event) {
+            event.preventDefault();
+            
+            const sceneId = document.getElementById('sceneId').value;
+            const floorId = document.getElementById('sceneFloor').value;
+            
+            const sceneData = {
+                title: document.getElementById('sceneTitle').value,
+                floor: floorId,
+                hfov: parseInt(document.getElementById('sceneHfov').value),
+                pitch: parseInt(document.getElementById('scenePitch').value),
+                yaw: parseInt(document.getElementById('sceneYaw').value),
+                type: document.getElementById('sceneType').value,
+                panorama: document.getElementById('scenePanorama').value,
+                hotSpots: hotspots,
+                mapPosition: config.scenes[sceneId]?.mapPosition || { x: 50, y: 50 }
+            };
+
+            const floor = config.floors.find(f => f.id === floorId);
+            if (floor && !floor.scenes.includes(sceneId)) {
+                floor.scenes.push(sceneId);
+            }
+
+            config.scenes[sceneId] = sceneData;
+            
+            closeSceneModal();
+            renderScenes();
+            alert('✅ Scène enregistrée !');
+        }
+
+        function deleteScene(sceneId) {
+            if (confirm('Voulez-vous vraiment supprimer cette scène ?')) {
+                delete config.scenes[sceneId];
+                
+                config.floors.forEach(floor => {
+                    floor.scenes = floor.scenes.filter(s => s !== sceneId);
+                });
+                
+                renderScenes();
+            }
+        }
+
+        function closeSceneModal() {
+            document.getElementById('sceneModal').style.display = 'none';
+            document.getElementById('panoramaEditor').style.display = 'none';
+        }
+
+        function updateSceneFloorSelect() {
+            const select = document.getElementById('sceneFloor');
+            select.innerHTML = '<option value="">-- Sélectionner --</option>';
+            config.floors.forEach(floor => {
+                const option = document.createElement('option');
+                option.value = floor.id;
+                option.textContent = floor.name;
+                select.appendChild(option);
+            });
+        }
+
+        // ========== ÉDITEUR VISUEL DE HOTSPOTS ==========
+        
+        // Gestion du type de hotspot
+        document.addEventListener('DOMContentLoaded', function() {
+            const typeSelect = document.getElementById('newHotspotType');
+            if (typeSelect) {
+                typeSelect.addEventListener('change', function() {
+                    const sceneGroup = document.getElementById('sceneSelectGroup');
+                    if (this.value === 'scene') {
+                        sceneGroup.style.display = 'block';
+                    } else {
+                        sceneGroup.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        function loadPanoramaPreview() {
+            const panoramaPath = document.getElementById('scenePanorama').value;
+            if (!panoramaPath) {
+                alert('⚠️ Entrez d\'abord le chemin du panorama');
+                return;
+            }
+
+            const editor = document.getElementById('panoramaEditor');
+            editor.style.display = 'block';
+
+            const container = document.getElementById('panoramaContainer');
+            container.innerHTML = `<img src="${panoramaPath}" alt="Panorama" onclick="placeHotspotOnPanorama(event)" onload="renderHotspotMarkers()">`;
+
+            // Mettre à jour la liste des scènes disponibles
+            const sceneSelect = document.getElementById('newHotspotScene');
+            sceneSelect.innerHTML = '<option value="">-- Sélectionner --</option>';
+            for (const [id, scene] of Object.entries(config.scenes)) {
+                if (id !== currentEditingScene) {
+                    const option = document.createElement('option');
+                    option.value = id;
+                    option.textContent = scene.title;
+                    sceneSelect.appendChild(option);
+                }
+            }
+        }
+
+        function placeHotspotOnPanorama(event) {
+            const text = document.getElementById('newHotspotText').value;
+            const type = document.getElementById('newHotspotType').value;
+            
+            if (!text) {
+                alert('⚠️ Entrez d\'abord un texte pour le hotspot');
+                return;
+            }
+
+            if (type === 'scene') {
+                const sceneId = document.getElementById('newHotspotScene').value;
+                if (!sceneId) {
+                    alert('⚠️ Sélectionnez une scène de destination');
+                    return;
+                }
+            }
+
+            const img = event.target;
+            const rect = img.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            // Conversion pixel → pitch/yaw pour panorama équirectangulaire
+            const yaw = (x / rect.width) * 360 - 180;
+            const pitch = 90 - (y / rect.height) * 180;
+
+            const hotspot = {
+                pitch: parseFloat(pitch.toFixed(1)),
+                yaw: parseFloat(yaw.toFixed(1)),
+                type: type,
+                text: text
+            };
+
+            if (type === 'scene') {
+                hotspot.sceneId = document.getElementById('newHotspotScene').value;
+            }
+
+            hotspots.push(hotspot);
+            
+            // Réinitialiser les champs
+            document.getElementById('newHotspotText').value = '';
+            document.getElementById('newHotspotScene').value = '';
+            
+            document.getElementById('coordDisplay').textContent = 
+                `✅ Hotspot ajouté : Pitch=${pitch.toFixed(1)}°, Yaw=${yaw.toFixed(1)}°`;
+
+            renderHotspotMarkers();
+            updateHotspotList();
+        }
+
+        function renderHotspotMarkers() {
+            const container = document.getElementById('panoramaContainer');
+            const img = container.querySelector('img');
+            if (!img) return;
+
+            // Supprimer les anciens marqueurs
+            container.querySelectorAll('.hotspot-marker').forEach(m => m.remove());
+
+            const rect = img.getBoundingClientRect();
+            const imgRect = img.getBoundingClientRect();
+
+            hotspots.forEach((hotspot, index) => {
+                // Conversion pitch/yaw → pixel
+                const x = ((hotspot.yaw + 180) / 360) * img.width;
+                const y = ((90 - hotspot.pitch) / 180) * img.height;
+
+                const marker = document.createElement('div');
+                marker.className = 'hotspot-marker ' + (hotspot.type === 'scene' ? 'scene-marker' : 'info-marker');
+                marker.style.left = x + 'px';
+                marker.style.top = y + 'px';
+                marker.textContent = hotspot.type === 'scene' ? '🎯' : 'ℹ️';
+                marker.title = hotspot.text;
+                marker.onclick = (e) => {
+                    e.stopPropagation();
+                    selectHotspot(index);
+                };
+
+                if (selectedHotspotIndex === index) {
+                    marker.classList.add('selected');
+                }
+
+                container.appendChild(marker);
+            });
+        }
+
+        function selectHotspot(index) {
+            selectedHotspotIndex = index;
+            renderHotspotMarkers();
+            updateHotspotList();
+        }
+
+        function updateHotspotList() {
+            const list = document.getElementById('hotspotList');
+            list.innerHTML = '';
+
+            if (hotspots.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Aucun hotspot. Cliquez sur "Charger l\'aperçu" puis sur l\'image pour ajouter des hotspots.</p>';
+                return;
+            }
+
+            hotspots.forEach((hotspot, index) => {
+                const item = document.createElement('div');
+                item.className = 'hotspot-item ' + hotspot.type + '-type';
+                
+                let destinationInfo = '';
+                if (hotspot.type === 'scene' && hotspot.sceneId) {
+                    const targetScene = config.scenes[hotspot.sceneId];
+                    destinationInfo = `<p><strong>→</strong> ${targetScene ? targetScene.title : hotspot.sceneId}</p>`;
+                }
+
+                item.innerHTML = `
+                    <div class="hotspot-header">
+                        <span class="hotspot-badge ${hotspot.type}">${hotspot.type === 'scene' ? '🎯 Scène' : 'ℹ️ Info'}</span>
+                        <button type="button" class="btn btn-danger" onclick="removeHotspot(${index})">🗑️</button>
+                    </div>
+                    <p><strong>${hotspot.text}</strong></p>
+                    ${destinationInfo}
+                    <p style="font-size: 12px; color: #666; margin-top: 5px;">
+                        Pitch: ${hotspot.pitch}° | Yaw: ${hotspot.yaw}°
+                    </p>
+                `;
+                
+                if (selectedHotspotIndex === index) {
+                    item.style.borderColor = '#667eea';
+                    item.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.2)';
+                }
+                
+                item.onclick = () => selectHotspot(index);
+                
+                list.appendChild(item);
+            });
+        }
+
+        function removeHotspot(index) {
+            if (confirm('Supprimer ce hotspot ?')) {
+                hotspots.splice(index, 1);
+                selectedHotspotIndex = null;
+                renderHotspotMarkers();
+                updateHotspotList();
+            }
+        }
+
+        // ========== GESTION DES POSITIONS SUR PLAN ==========
+        function updatePlanFloorSelect() {
+            const select = document.getElementById('planFloorSelect');
+            select.innerHTML = '<option value="">-- Sélectionner un étage --</option>';
+            config.floors.forEach((floor, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = floor.name;
+                select.appendChild(option);
+            });
+        }
+
+        function loadPlan() {
+            const floorIndex = document.getElementById('planFloorSelect').value;
+            if (floorIndex === '') {
+                document.getElementById('planEditor').style.display = 'none';
+                return;
+            }
+
+            const floor = config.floors[floorIndex];
+            document.getElementById('planEditor').style.display = 'block';
+            document.getElementById('planTitle').textContent = floor.name;
+
+            const sceneSelect = document.getElementById('sceneToPosition');
+            sceneSelect.innerHTML = '<option value="">-- Sélectionner une scène --</option>';
+            floor.scenes.forEach(sceneId => {
+                if (config.scenes[sceneId]) {
+                    const option = document.createElement('option');
+                    option.value = sceneId;
+                    option.textContent = config.scenes[sceneId].title;
+                    sceneSelect.appendChild(option);
+                }
+            });
+
+            const container = document.getElementById('planContainer');
+            container.innerHTML = `<img src="${floor.plan}" alt="Plan" onclick="placeSceneOnPlan(event)">`;
+
+            floor.scenes.forEach((sceneId, index) => {
+                const scene = config.scenes[sceneId];
+                if (scene && scene.mapPosition) {
+                    const point = document.createElement('div');
+                    point.className = 'plan-point';
+                    point.style.left = scene.mapPosition.x + '%';
+                    point.style.top = scene.mapPosition.y + '%';
+                    point.textContent = index + 1;
+                    point.title = scene.title;
+                    container.appendChild(point);
+                }
+            });
+        }
+
+        function placeSceneOnPlan(event) {
+            const sceneId = document.getElementById('sceneToPosition').value;
+            if (!sceneId) {
+                alert('⚠️ Sélectionnez d\'abord une scène à positionner');
+                return;
+            }
+
+            const rect = event.target.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width * 100).toFixed(2);
+            const y = ((event.clientY - rect.top) / rect.height * 100).toFixed(2);
+
+            config.scenes[sceneId].mapPosition = { x: parseFloat(x), y: parseFloat(y) };
+            
+            loadPlan();
+            alert(`✅ Position enregistrée pour "${config.scenes[sceneId].title}"`);
+        }
+
+        // ========== EXPORT ==========
+        function updateConfigPreview() {
+            document.getElementById('configPreview').textContent = 
+                JSON.stringify(config, null, 2);
+        }
+
+        function downloadConfig() {
+            const dataStr = JSON.stringify(config, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'config.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Fichier config.json téléchargé !');
+        }
+
+        // Initialisation
+        updateConfigPreview();
+    </script>
+</body>
+</html>

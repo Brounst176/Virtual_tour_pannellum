@@ -1,0 +1,319 @@
+{
+  "author": "HEIG-VD",
+  "firstScene": "1",
+  "sceneFadeDuration": 500,
+  "floors": [
+    {
+      "id": "D61",
+      "name": "D61",
+      "plan": "/tour/heig-vd/D61/plan.svg",
+      "scenes": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ]
+    },
+    {
+      "id": "J",
+      "name": "J",
+      "plan": "/tour/heig-vd/J/plan.svg",
+      "scenes": [
+        "J06c",
+        "J07_1",
+        "J07_2",
+        "J_floor_1",
+        "J07b_local_photo"
+      ]
+    }
+  ],
+  "scenes": {
+    "1": {
+      "title": "Image 1",
+      "floor": "D61",
+      "hfov": 110,
+      "pitch": -10,
+      "yaw": 5,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/D61/1.jpg",
+      "hotSpots": [
+        {
+          "pitch": -2.1,
+          "yaw": 0,
+          "type": "scene",
+          "sceneId": "2"
+        },
+        {
+          "pitch": -3.8,
+          "yaw": 93,
+          "type": "scene",
+          "sceneId": "3"
+        },
+        {
+          "pitch": 0.4,
+          "yaw": 51.7,
+          "type": "scene",
+          "sceneId": "4"
+        },
+        {
+          "pitch": -31.5,
+          "yaw": 31.3,
+          "type": "info",
+          "text": "Carte de la suisse"
+        }
+      ],
+      "mapPosition": {
+        "x": 64,
+        "y": 32
+      }
+    },
+    "2": {
+      "title": "Image 2",
+      "floor": "D61",
+      "hfov": 110,
+      "pitch": 0,
+      "yaw": 180,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/D61/2.jpg",
+      "hotSpots": [
+        {
+          "pitch": -2.5,
+          "yaw": -83.4,
+          "type": "scene",
+          "sceneId": "1"
+        },
+        {
+          "pitch": -1.5,
+          "yaw": -131.1,
+          "type": "scene",
+          "sceneId": "3"
+        },
+        {
+          "pitch": -3.4,
+          "yaw": 170.1,
+          "type": "scene",
+          "sceneId": "4"
+        },
+        {
+          "pitch": 6.6,
+          "yaw": -178.4,
+          "type": "info",
+          "text": "Station totale"
+        }
+      ],
+      "mapPosition": {
+        "x": 64,
+        "y": 55
+      }
+    },
+    "3": {
+      "title": "Image 3",
+      "floor": "D61",
+      "hfov": 110,
+      "pitch": 0,
+      "yaw": 5,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/D61/3.jpg",
+      "hotSpots": [
+        {
+          "pitch": -0.4,
+          "yaw": -77.4,
+          "type": "scene",
+          "sceneId": "1"
+        },
+        {
+          "pitch": -0.5,
+          "yaw": -40.6,
+          "type": "scene",
+          "sceneId": "2"
+        },
+        {
+          "pitch": 1,
+          "yaw": 32.4,
+          "type": "scene",
+          "sceneId": "4"
+        }
+      ],
+      "mapPosition": {
+        "x": 32,
+        "y": 32
+      }
+    },
+    "4": {
+      "title": "Image 4",
+      "floor": "D61",
+      "hfov": 110,
+      "pitch": 0,
+      "yaw": 5,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/D61/4.jpg",
+      "hotSpots": [
+        {
+          "pitch": 1.4,
+          "yaw": 0.3,
+          "type": "scene",
+          "sceneId": "1"
+        },
+        {
+          "pitch": 1.5,
+          "yaw": 22.2,
+          "type": "scene",
+          "sceneId": "2"
+        },
+        {
+          "pitch": 0.2,
+          "yaw": -33,
+          "type": "scene",
+          "sceneId": "3"
+        },
+        {
+          "pitch": -4.6,
+          "yaw": -111.6,
+          "type": "info",
+          "text": "Sortie"
+        }
+      ],
+      "mapPosition": {
+        "x": 17.32,
+        "y": 84.85
+      }
+    },
+    "J06c": {
+      "title": "J06c",
+      "floor": "J",
+      "hfov": 110,
+      "pitch": 0,
+      "yaw": 0,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/J/J01.jpg",
+      "hotSpots": [
+        {
+          "pitch": 0.9,
+          "yaw": 13.2,
+          "type": "info",
+          "text": "Projet corneille"
+        },
+        {
+          "pitch": -12.8,
+          "yaw": 142.8,
+          "type": "scene",
+          "text": "Couloir",
+          "sceneId": "J_floor_1"
+        }
+      ],
+      "mapPosition": {
+        "x": 61.95,
+        "y": 74.04
+      }
+    },
+    "J07_1": {
+      "title": "J07_1",
+      "floor": "J",
+      "hfov": 110,
+      "pitch": 0,
+      "yaw": -160,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/J/J04.jpg",
+      "hotSpots": [
+        {
+          "pitch": -2.3,
+          "yaw": -95.2,
+          "type": "scene",
+          "text": "J07",
+          "sceneId": "J07_2"
+        },
+        {
+          "pitch": -7.9,
+          "yaw": 90.4,
+          "type": "scene",
+          "text": "Couloir",
+          "sceneId": "J_floor_1"
+        }
+      ],
+      "mapPosition": {
+        "x": 33.48,
+        "y": 52.66
+      }
+    },
+    "J07_2": {
+      "title": "J07_2",
+      "floor": "J",
+      "hfov": 110,
+      "pitch": 0,
+      "yaw": 140,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/J/J05.jpg",
+      "hotSpots": [
+        {
+          "pitch": -4.9,
+          "yaw": 99.2,
+          "type": "scene",
+          "text": "J07",
+          "sceneId": "J07_1"
+        }
+      ],
+      "mapPosition": {
+        "x": 33.48,
+        "y": 13.01
+      }
+    },
+    "J_floor_1": {
+      "title": "Couloir",
+      "floor": "J",
+      "hfov": 120,
+      "pitch": 0,
+      "yaw": 0,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/J/J02.jpg",
+      "hotSpots": [
+        {
+          "pitch": -4.6,
+          "yaw": -27.1,
+          "type": "scene",
+          "text": "J06c",
+          "sceneId": "J06c"
+        },
+        {
+          "pitch": -7.9,
+          "yaw": 164,
+          "type": "scene",
+          "text": "J07b Local photo",
+          "sceneId": "J07b_local_photo"
+        },
+        {
+          "pitch": -3.9,
+          "yaw": -128.2,
+          "type": "scene",
+          "text": "J07",
+          "sceneId": "J07_1"
+        }
+      ],
+      "mapPosition": {
+        "x": 37.04,
+        "y": 70.81
+      }
+    },
+    "J07b_local_photo": {
+      "title": "Local photo J07b",
+      "floor": "J",
+      "hfov": 120,
+      "pitch": 0,
+      "yaw": 0,
+      "type": "equirectangular",
+      "panorama": "/tour/heig-vd/J/J03.jpg",
+      "hotSpots": [
+        {
+          "pitch": -7.7,
+          "yaw": 99.2,
+          "type": "scene",
+          "text": "Couloir",
+          "sceneId": "J_floor_1"
+        }
+      ],
+      "mapPosition": {
+        "x": 26.03,
+        "y": 62.5
+      }
+    }
+  }
+}

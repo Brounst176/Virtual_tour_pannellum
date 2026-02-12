@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visite Virtuelle Interactive</title>
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script> -->
+    <link rel="stylesheet" href="lib/pannellum.css"/>
+    <script src="lib/pannellum.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #panorama {
+            width: 100vw;
+            height: 100vh;
+        }
+        .logo-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .scene-info {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .scene-info h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .scene-info p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .pnlm-panorama-info{
+            display: none !important;
+        }
+
+        .floor-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 10px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .floor-btn {
+            display: block;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .floor-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateX(-3px);
+        }
+
+        .floor-btn.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .map-container {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 15px;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            transition: all 0.3s ease;
+        }
+
+        .map-header {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-wrapper {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #floor-plan {
+            display: block;
+            width: 100%;
+            height: auto;
+            opacity: 0.9;
+        }
+
+        .map-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .map-point:hover {
+            transform: translate(-50%, -50%) scale(1.3);
+            background: #2563eb;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+        }
+
+        .map-point.active {
+            background: #ef4444;
+            animation: pulse 2s infinite;
+        }
+
+        .map-point.active::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: #ef4444;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes ripple {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(2.5);
+            }
+        }
+
+        .point-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .map-point:hover .point-label {
+            opacity: 1;
+        }
+
+        .toggle-map {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-map:hover {
+            transform: scale(1.2);
+        }
+
+        .map-container.minimized {
+            padding: 10px;
+        }
+
+        .map-container.minimized .map-wrapper,
+        .map-container.minimized .map-header span {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .map-container {
+                max-width: 250px;
+                bottom: 80px;
+            }
+
+            .scene-info h1 {
+                font-size: 18px;
+            }
+
+            .floor-controls {
+                top: auto;
+                bottom: 20px;
+                left: 20px;
+                right: auto;
+            }
+
+            .floor-btn {
+                display: inline-block;
+                margin: 0 5px;
+                min-width: 80px;
+            }
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+        }
+
+        .loader::after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            z-index: 2000;
+            max-width: 400px;
+            text-align: center;
+            display: none;
+        }
+
+        .error-message h2 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="panorama"></div>
+    <div class="loader" id="loader"></div>
+    <div class="error-message" id="error">
+        <h2>❌ Erreur de chargement</h2>
+        <p id="error-text"></p>
+    </div>
+
+    <div class="scene-info">
+        <h1 id="scene-title">Chargement...</h1>
+        <p id="scene-description">Chargement de la visite...</p>
+    </div>
+    <div class="logo-container" >
+        <img src="lib/HEIG-VD_logotype-baseline_rouge-rvb.png" alt="Logo" style="width: 120px; opacity: 0.8;">
+    </div>
+
+    <div class="floor-controls" id="floor-controls"></div>
+
+    <div class="map-container" id="map-container">
+        <div class="map-header">
+            <span id="floor-name">Plan</span>
+            <button class="toggle-map" onclick="toggleMap()">📍</button>
+        </div>
+        <div class="map-wrapper">
+            <img id="floor-plan" src="" alt="Plan de l'étage">
+            <div id="map-points"></div>
+        </div>
+    </div>
+
+    <script>
+        let viewer;
+        let currentScene;
+        let currentFloor;
+        let isMinimized = false;
+        let tourConfig;
+
+        // Exemple URL: https://exemple.com/?page=accueil&id=123
+        const urlParams = new URLSearchParams(window.location.search);
+        const tour_name = urlParams.get('tour_name'); 
+
+       path_config = "tour/"+tour_name + "/config.json";
+        console.log("URL du config:", path_config);
+        // Chargement de la configuration
+        async function loadConfig() {
+            try {
+                // Essaie de charger config.json, sinon config-example.json
+                let response = await fetch(path_config).catch(() => fetch('config-example.json'));
+                
+                if (!response.ok) {
+                    throw new Error('Impossible de charger le fichier de configuration');
+                }
+                
+                tourConfig = await response.json();
+                
+                // Trouve la première scène disponible
+                currentScene = Object.keys(tourConfig.scenes)[0];
+                currentFloor = tourConfig.scenes[currentScene].floor;
+                
+                initViewer();
+                initFloorControls();
+                updateSceneInfo();
+                updateMap();
+                
+                document.getElementById('loader').style.display = 'none';
+            } catch (error) {
+                showError('Erreur de chargement de la configuration: ' + error.message);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('error-text').textContent = message;
+            document.getElementById('error').style.display = 'block';
+        }
+
+        function initViewer() {
+            const scenes = {};
+            
+            for (const [sceneId, sceneData] of Object.entries(tourConfig.scenes)) {
+                scenes[sceneId] = {
+                    title: sceneData.title,
+                    hfov: sceneData.hfov,
+                    pitch: sceneData.pitch  || 0,
+                    yaw: sceneData.yaw  || 0,
+                    type: sceneData.type,
+                    panorama: sceneData.panorama,
+                    hotSpots: sceneData.hotSpots  || []
+                };
+            }
+
+            viewer = pannellum.viewer('panorama', {
+                default: {
+                    firstScene: currentScene,
+                    author: tourConfig.author,
+                    sceneFadeDuration: tourConfig.sceneFadeDuration,
+                    autoLoad: true,
+                    showControls: true,
+                    compass: false
+                },
+                scenes: scenes
+            });
+             // Événements
+            viewer.on('load', function() {
+                console.log('Panorama chargé:', currentScene);
+                document.getElementById('loader').style.display = 'none';
+            });
+
+            viewer.on('scenechange', function(sceneId) {
+                console.log('Changement de scène:', currentScene, '->', sceneId);
+                currentScene = sceneId;
+                updateSceneInfo();
+                updateMap();
+                // FIX IMPORTANT: Forcer un redimensionnement après le changement
+                setTimeout(() => {
+                    try {
+                        viewer.resize();
+                    } catch(e) {
+                        console.log('Resize non nécessaire');
+                    }
+                }, 100);
+            });
+            viewer.on('scenechangefadedone', function() {
+                document.getElementById('loader').style.display = 'none';
+                console.log('Transition terminée');
+            });
+
+            viewer.on('error', function(error) {
+                console.error('ERREUR Pannellum:', error);
+                alert('Erreur de chargement: ' + error);
+                document.getElementById('loader').style.display = 'none';
+            });
+        }
+
+        function updateSceneInfo() {
+            const scene = tourConfig.scenes[currentScene];
+            document.getElementById('scene-title').textContent = scene.title;
+            document.getElementById('scene-description').textContent = 'Naviguez avec la souris ou cliquer sur les points d\'intrérêt';
+            currentFloor = scene.floor;
+            
+            document.querySelectorAll('.floor-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.floor === currentFloor) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function initFloorControls() {
+            const container = document.getElementById('floor-controls');
+            
+            tourConfig.floors.forEach(floor => {
+                const btn = document.createElement('button');
+                btn.className = 'floor-btn';
+                btn.textContent = floor.name;
+                btn.dataset.floor = floor.id;
+                
+                if (floor.id === currentFloor) {
+                    btn.classList.add('active');
+                }
+                
+                btn.onclick = () => changeFloor(floor.id);
+                container.appendChild(btn);
+            });
+        }
+
+        function changeFloor(floorId) {
+            if (floorId === currentFloor) return;
+            
+            const floor = tourConfig.floors.find(f => f.id === floorId);
+            if (!floor || floor.scenes.length === 0) {
+                alert('Aucune vue disponible pour cet étage');
+                return;
+            }
+            
+            currentFloor = floorId;
+            const firstScene = floor.scenes[0];
+            loadScene(firstScene);
+        }
+
+        function loadScene(sceneId) {
+            if (sceneId === currentScene) return;
+
+            console.log('Demande de chargement:', sceneId);
+            document.getElementById('loader').style.display = 'block';
+            
+            try {
+                viewer.loadScene(sceneId);
+            } catch (error) {
+                console.error('Erreur loadScene:', error);
+                document.getElementById('loader').style.display = 'none';
+            }
+        }
+
+        function updateMap() {
+            const floor = tourConfig.floors.find(f => f.id === currentFloor);
+            if (!floor) return;
+            
+            document.getElementById('floor-plan').src = floor.plan;
+            document.getElementById('floor-name').textContent = floor.name;
+            
+            const pointsContainer = document.getElementById('map-points');
+            pointsContainer.innerHTML = '';
+            
+            floor.scenes.forEach(sceneId => {
+                const scene = tourConfig.scenes[sceneId];
+                if (!scene.mapPosition) return;
+                
+                const point = document.createElement('div');
+                point.className = 'map-point';
+                if (sceneId === currentScene) {
+                    point.classList.add('active');
+                }
+                
+                point.style.left = scene.mapPosition.x + '%';
+                point.style.top = scene.mapPosition.y + '%';
+                
+                const label = document.createElement('div');
+                label.className = 'point-label';
+                label.textContent = scene.title;
+                point.appendChild(label);
+                
+                point.onclick = () => loadScene(sceneId);
+                pointsContainer.appendChild(point);
+            });
+        }
+
+        function toggleMap() {
+            const container = document.getElementById('map-container');
+            isMinimized = !isMinimized;
+            container.classList.toggle('minimized', isMinimized);
+        }
+
+        // Démarre l'application
+        document.addEventListener('DOMContentLoaded', loadConfig);
+
+        // FIX: Rafraîchir le viewer en cas de redimensionnement
+        window.addEventListener('resize', function() {
+            if (viewer) {
+                try {
+                    viewer.resize();
+                } catch(e) {
+                    // Ignorer l'erreur
+                }
+            }
+        });
+    </script>
+</body>
+</html>
