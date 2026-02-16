@@ -22,7 +22,7 @@ Une page web moderne pour créer des visites virtuelles 360° avec plan de navig
 
 ### Option 2 : Python (pour tester localement)
 ```bash
-# Dans le dossier contenant virtual-tour.html
+# Dans le dossier contenant la copie du github, lancez :
 python -m http.server 8000
 # Ouvrez http://localhost:8000/
 ```
@@ -241,6 +241,15 @@ hotSpots: [
 ```javascript
 sceneFadeDuration: 500 // Durée en millisecondes
 ```
+
+### Modifier les symboles des hotspots
+
+Les symboles sont définis dans `symbole/symbole.svg`. Vous pouvez les personnaliser en modifiant ce fichier SVG. Pour en augmenter la taille il faut modifier le CSS `lib/pannellum.css` dans la classe `.pnlm-sprite`,  `.pnlm-hotspot.pnlm-info`, `.pnlm-hotspot.pnlm-scene` et les `:hover` associés.
+
+Il faut également changer les valeurs pour smartphone dans la media query `@media (max-width: 768px)`.
+
+
+
 
 ## 🐛 Dépannage
 
