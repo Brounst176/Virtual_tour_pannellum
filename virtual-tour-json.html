@@ -238,6 +238,42 @@
             display: none;
         }
 
+
+
+        /* HOTSPOT DAMIER */
+        .damier-hotspot {
+            height: 50px;
+            width: 50px;
+            background-image: url('../symbole/damier.svg');
+        }
+        div.damier-tooltip span {
+            visibility: hidden;
+            position: absolute;
+            border-radius: 3px;
+            background-color: #fff;
+            color: #000;
+            text-align: center;
+            max-width: 200px;
+            padding: 5px 10px;
+            margin-left: -220px;
+            cursor: default;
+        }
+        div.damier-tooltip:hover span{
+            visibility: visible;
+        }
+        div.damier-tooltip:hover span:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #fff transparent transparent transparent;
+            bottom: -20px;
+            left: -10px;
+            margin: 0 50%;
+        }
+
         @media (max-width: 768px) {
             .map-container {
                 max-width: 250px;
@@ -360,7 +396,7 @@
                 tourConfig = await response.json();
                 
                 // Trouve la première scène disponible
-                currentScene = Object.keys(tourConfig.scenes)[0];
+                currentScene = tourConfig.firstScene ?? Object.keys(tourConfig.scenes)[0];
                 currentFloor = tourConfig.scenes[currentScene].floor;
                 
                 initViewer();
@@ -550,6 +586,8 @@
                 }
             }
         });
+
+
     </script>
 </body>
 </html>

@@ -420,6 +420,16 @@
     background-position: 0 -210px /*(4x height de .pnlm-hotspot) */
 }
 
+.pnlm-hotspot.pnlm-damier {
+    /* element à changer si les symboles sont agrandis */
+    background-image: url('../symbole/damier.svg');
+    background-size: 52px 52px !important;
+}
+.pnlm-hotspot.pnlm-cible {
+    /* element à changer si les symboles sont agrandis */
+    background-image: url('../symbole/cible.svg');
+    background-size: 52px 52px !important;
+}
 .pnlm-hotspot.pnlm-scene {
     /* element à changer si les symboles sont agrandis */
     background-position: 0 -262px /*(4x height de .pnlm-hotspot) */
@@ -481,6 +491,12 @@ div.pnlm-tooltip:hover span:after {
     left: -10px;
     margin: 0 50%
 }
+
+div.pnlm-damier span, div.pnlm-cible span  {
+    visibility: visible
+}
+
+
 
 .pnlm-compass {
     position: absolute;

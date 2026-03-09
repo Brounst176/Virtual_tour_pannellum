@@ -244,7 +244,7 @@ sceneFadeDuration: 500 // Durée en millisecondes
 
 ### Modifier les symboles des hotspots
 
-Les symboles sont définis dans `symbole/symbole.svg`. Vous pouvez les personnaliser en modifiant ce fichier SVG. Pour en augmenter la taille il faut modifier le CSS `lib/pannellum.css` dans la classe `.pnlm-sprite`,  `.pnlm-hotspot.pnlm-info`, `.pnlm-hotspot.pnlm-scene` et les `:hover` associés.
+Les symboles sont définis dans `symbole/symbole.svg`. Vous pouvez les personnaliser en modifiant ce fichier SVG. Pour en augmenter la taille il faut modifier le CSS `lib/pannellum.css` dans la classe `.pnlm-sprite`, `.pnlm-hotspot.pnlm-info`, `.pnlm-hotspot.pnlm-scene` et les `:hover` associés.
 
 Il faut également changer les valeurs pour smartphone dans la media query `@media (max-width: 768px)`.
 
