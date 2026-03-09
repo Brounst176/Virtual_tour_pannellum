@@ -54,24 +54,17 @@
    - **Pitch/Yaw** : orientation initiale de la caméra
 
 **Ajouter des hotspots (points cliquables) :**
-1. Dans la scène, clique sur "+ Ajouter un hotspot"
+1. Dans la scène, aller dans la partie hotspots (charger l'apercu de l'image avant)
 2. Pour chaque hotspot :
+3. - **Type** : Le type de points ("Scène", info, cible, damier)
    - **Texte** : ce qui s'affiche (ex: "Aller au salon")
-   - **Pitch** : hauteur du point (-90 à 90)
-   - **Yaw** : rotation du point (-180 à 180)
-   - **Scène ID** : vers quelle scène ce hotspot dirige
-
-💡 **Astuce pour trouver Pitch/Yaw :**
-- Ouvre ta visite dans le navigateur
-- Appuie sur F12 → Console
-- Tape : `viewer.getPitch()` et `viewer.getYaw()`
-- Note les valeurs quand tu es bien positionné !
+   - **Scène ID** : vers quelle scène ce hotspot dirige (si type de "Scène")
+   - **Position** : Cliquer sur l'image l'endroit du hotspot.
 
 ---
 
 ### 4️⃣ Onglet "Positions Plan" ⭐
 
-C'est ici que la magie opère !
 
 **Positionner tes scènes visuellement :**
 1. Sélectionne un étage dans la liste déroulante
