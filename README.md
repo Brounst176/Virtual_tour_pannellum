@@ -12,6 +12,14 @@ Une page web moderne pour créer des visites virtuelles 360° avec plan de navig
 - 📱 Responsive (desktop et mobile)
 - ⚡ Page html facile à personnaliser et déployer
 
+## 🚀 Installation sur son ordinateur
+
+Il faut ouvrir un terminal est aller dans le dossier du dépôt de la visite vitruelle. Il est alors possible de copier le code grâce à la commande suivante :
+
+```bash
+git clone https://github.com/Brounst176/Virtual_tour_pannellum
+```
+
 ## 🚀 Déploiement
 
 ### Option 1 : Serveur Web Simple
