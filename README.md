@@ -256,7 +256,18 @@ Les symboles sont définis dans `symbole/symbole.svg`. Vous pouvez les personnal
 
 Il faut également changer les valeurs pour smartphone dans la media query `@media (max-width: 768px)`.
 
+## 🐛 Script floor automatique
 
+Le script python generate_floor_scenes.py permet d'obtenir un JSON de scène depuis un dossier image
+
+Utilisation :
+### Génère juste le JSON des scenes (à copier/coller)
+python scripts/generate_floor_scenes.py --images-dir tour/lesCygnes/images --floor rez
+
+### Ou fusionne directement dans config.json (ajoute les scenes manquantes dans "scenes" + dans floors[rez].scenes, sans écraser l'existant)
+python scripts/generate_floor_scenes.py --images-dir tour/lesCygnes/images --floor etage \
+    --config tour/lesCygnes/config.json --merge
+Pour chaque image du dossier, l'id et le titre sont le nom de fichier sans extension (image001 → title: "image001"), le floor est celui passé en paramètre, et le panorama pointe vers <images-dir>/<fichier>. Les scènes déjà présentes dans config.json sont laissées intactes (pas d'écrasement de titres/hotspots déjà personnalisés) sauf si --force est passé.
 
 
 ## 🐛 Dépannage
